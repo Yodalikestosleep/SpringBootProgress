@@ -1,7 +1,6 @@
 package com.example.yoda.Chapter21.controllers;
-
-import com.example.yoda.Chapter21.entities.EmployeeEntity;
-import com.example.yoda.Chapter21.repositories.EmployeeRepository;
+import com.example.yoda.Chapter21.dto.EmployeeDto;
+import com.example.yoda.Chapter21.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,26 +8,35 @@ import java.util.List;
 @RestController
 @RequestMapping(path="/employees")
 public class EmployeeController {
-
-    private final EmployeeRepository employeerepository;
-
-    public EmployeeController(EmployeeRepository employeerepository) {
-        this.employeerepository = employeerepository;
+    private final EmployeeService employeeService;
+    public EmployeeController(EmployeeService employeeService){
+        this.employeeService=employeeService;
+    }
+    @GetMapping
+    public EmployeeDto getById(@RequestParam(required = true) Long id ){
+        return employeeService.getById(id);
     }
 
-
-    @GetMapping(path="/{id}")
-    public EmployeeEntity getEmployeeById1(@PathVariable(name="id") Long id){
-        return employeerepository.findById(id).orElse(null);
-
+    @GetMapping(path="/all")
+    public List<EmployeeDto> getAllEmployees(){
+        return employeeService.getAllEmployees();
     }
 
     @PostMapping
-    public EmployeeEntity createEmployee(@RequestBody EmployeeEntity inputEmployee){
-        return employeerepository.save(inputEmployee);
+    public EmployeeDto create(@RequestBody(required = true) EmployeeDto employeeDto){
+        return employeeService.create(employeeDto);
     }
-    @GetMapping(path="/all")
-    public List<EmployeeEntity> getAllEmployees(){
-        return employeerepository.findAll();
+
+    @PutMapping(path="/{employeeId}")
+    public EmployeeDto updateEmployeeById(@RequestBody(required = true) EmployeeDto employeeDto, @PathVariable(required = true) Long employeeId){
+        return employeeService.updateEmployeeById(employeeDto,employeeId);
     }
+
+    @DeleteMapping
+    public boolean deleteEmployeeById(@RequestParam(required = true) Long employeeId){
+        return employeeService.deleteEmployeeById(employeeId);
+    }
+
+
+
 }
