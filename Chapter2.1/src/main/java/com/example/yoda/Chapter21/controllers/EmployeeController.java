@@ -1,9 +1,15 @@
 package com.example.yoda.Chapter21.controllers;
 import com.example.yoda.Chapter21.dto.EmployeeDto;
 import com.example.yoda.Chapter21.services.EmployeeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path="/employees")
@@ -13,18 +19,22 @@ public class EmployeeController {
         this.employeeService=employeeService;
     }
     @GetMapping
-    public EmployeeDto getById(@RequestParam(required = true) Long id ){
-        return employeeService.getById(id);
+    public ResponseEntity<EmployeeDto> getById(@RequestParam(required = true) Long id ){
+        Optional<EmployeeDto> employeeDto = (employeeService.getById(id));
+         //return 404 error , status code
+         //return 200 status code along with employeedto
+        return employeeDto.map(employeeDto1->ResponseEntity.ok(employeeDto1)).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping(path="/all")
-    public List<EmployeeDto> getAllEmployees(){
-        return employeeService.getAllEmployees();
+    public ResponseEntity<List<EmployeeDto>> getAllEmployees(){
+        return ResponseEntity.ok(employeeService.getAllEmployees()); //either empty list or filled so no need for
+        //checks right now
     }
 
     @PostMapping
-    public EmployeeDto create(@RequestBody(required = true) EmployeeDto employeeDto){
-        return employeeService.create(employeeDto);
+    public ResponseEntity<EmployeeDto> create(@RequestBody(required = true) EmployeeDto employeeDto){
+        return new ResponseEntity<>(employeeService.create(employeeDto), HttpStatus.CREATED);
     }
 
     @PutMapping(path="/{employeeId}")
@@ -35,6 +45,10 @@ public class EmployeeController {
     @DeleteMapping
     public boolean deleteEmployeeById(@RequestParam(required = true) Long employeeId){
         return employeeService.deleteEmployeeById(employeeId);
+    }
+    @PatchMapping
+    public EmployeeDto updatePartialEmployee(@RequestParam Long employeeId, @RequestBody Map<String,Object> updates){
+        return employeeService.updatePartialEmployee(employeeId,updates);
     }
 
 
