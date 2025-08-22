@@ -1,6 +1,7 @@
 package com.example.yoda.Chapter21.controllers;
 import com.example.yoda.Chapter21.dto.EmployeeDto;
 import com.example.yoda.Chapter21.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.RequestEntity;
@@ -33,22 +34,22 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeDto> create(@RequestBody(required = true) EmployeeDto employeeDto){
+    public ResponseEntity<EmployeeDto> create(@RequestBody(required = true) @Valid EmployeeDto employeeDto){
         return new ResponseEntity<>(employeeService.create(employeeDto), HttpStatus.CREATED);
     }
 
     @PutMapping(path="/{employeeId}")
-    public EmployeeDto updateEmployeeById(@RequestBody(required = true) EmployeeDto employeeDto, @PathVariable(required = true) Long employeeId){
-        return employeeService.updateEmployeeById(employeeDto,employeeId);
+    public ResponseEntity<EmployeeDto> updateEmployeeById(@RequestBody(required = true) EmployeeDto employeeDto, @PathVariable(required = true) Long employeeId){
+        return  ResponseEntity.ok(employeeService.updateEmployeeById(employeeDto,employeeId));
     }
 
     @DeleteMapping
-    public boolean deleteEmployeeById(@RequestParam(required = true) Long employeeId){
-        return employeeService.deleteEmployeeById(employeeId);
+    public ResponseEntity<Boolean> deleteEmployeeById(@RequestParam(required = true) Long employeeId){
+        return ResponseEntity.ok(employeeService.deleteEmployeeById(employeeId));
     }
     @PatchMapping
-    public EmployeeDto updatePartialEmployee(@RequestParam Long employeeId, @RequestBody Map<String,Object> updates){
-        return employeeService.updatePartialEmployee(employeeId,updates);
+    public ResponseEntity<EmployeeDto> updatePartialEmployee(@RequestParam Long employeeId, @RequestBody Map<String,Object> updates){
+        return ResponseEntity.ok(employeeService.updatePartialEmployee(employeeId,updates));
     }
 
 
