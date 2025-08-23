@@ -18,5 +18,8 @@ public class EmployeeEntity {
     //@NotNull
     private String name;
     private String email;
+    private String role;
+    private boolean active;
+    private Double salary;
 
 }
