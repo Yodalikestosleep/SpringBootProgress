@@ -46,7 +46,7 @@ public class EmployeeController {
     }
 
     @PutMapping(path="/{employeeId}")
-    public ResponseEntity<EmployeeDto> updateEmployeeById(@RequestBody(required = true) EmployeeDto employeeDto, @PathVariable(required = true) Long employeeId){
+    public ResponseEntity<EmployeeDto> updateEmployeeById(@RequestBody(required = true) @Valid EmployeeDto employeeDto, @PathVariable(required = true) Long employeeId){
         EmployeeDto employeeDto1 = employeeService.updateEmployeeById(employeeDto,employeeId); //if no employee with this id was found
         //this will throw an exception
         return  ResponseEntity.ok(employeeDto1);

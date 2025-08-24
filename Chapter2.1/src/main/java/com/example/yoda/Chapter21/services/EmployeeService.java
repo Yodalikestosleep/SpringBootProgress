@@ -57,14 +57,14 @@ public class EmployeeService {
 
     public boolean deleteEmployeeById(Long employeeId) {
         boolean exist = isExistById(employeeId);
-        if(!exist)return false;
+        if(!exist)throw new ResourceNotFoundException("Employee With this Id was not found: "+employeeId);
         employeeRepository.deleteById(employeeId);
         return true;
     }
 
     public EmployeeDto updatePartialEmployee(Long employeeId,Map<String, Object> updates) {
         boolean exist = isExistById(employeeId);
-        if(!exist) return null;
+        if(!exist) throw new ResourceNotFoundException("Employee With this Id was not found: "+employeeId);
         EmployeeEntity employeeEntity = employeeRepository.findById(employeeId).orElse(null);
         updates.forEach((key,value)->{ //we are using a reflection function to map the changes into a employee entity
             Field fieldToBeUpdated = ReflectionUtils.findRequiredField(EmployeeEntity.class,key);
